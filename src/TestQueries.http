@@ -1,0 +1,35 @@
+###__ROBOT__##
+POST http://localhost:5242/robots
+content-type: application/json
+
+{
+   "name": "R2"
+}
+
+###Three markers are needed to separate requests
+
+GET http://localhost:5242/robots
+
+###
+
+DELETE http://localhost:5242/robots/3
+
+###__CROP__##
+
+POST http://localhost:5242/crops
+content-type: application/json
+
+ {
+    "name": "Orange"
+ }
+
+###
+
+GET http://localhost:5242/crops
+
+###
+
+POST http://localhost:5242/robots/1/water/1
+
+###
+DELETE http://Localhost:5242/crops/1
