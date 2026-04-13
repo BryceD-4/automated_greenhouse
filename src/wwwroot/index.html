@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Greenhouse Dashboard</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            width: 400px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Greenhouse Dashboard</h1>
+
+    <h2>Crops</h2>
+    <table id="cropsTable">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Moisture</th>
+                <th>Growth</th>
+                <th>Health</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h2>Robots</h2>
+    <table id="robotsTable">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>BatteryLevel</th>
+                <th>State</th>
+                <th>Task</th>
+                <th>CropId</th>
+                <th>Progress</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h2>Current Tasks</h2>
+    <table id="currentTasksTable">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Type</th>
+                <th>RobotId</th>
+                <th>CropId</th>
+                <th>Status</th>
+                <th>Progress</th>
+                <th>Duration</th>
+                <th>Priority</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h2>Completed Tasks</h2>
+    <table id="completedTasksTable">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Type</th>
+                <th>RobotId</th>
+                <th>CropId</th>
+                <th>Status</th>
+                <th>Progress</th>
+                <th>Duration</th>
+                <th>Priority</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+<script>
+    async function loadData() {
+        try {
+            //Sends an HTTP GET to /api/status, getting the data from GreenhouseController
+            const response = await fetch('/api/status');
+            //Convert the raw text received into a JavaScript object
+            const data = await response.json();
+
+            // console.log("DATA:", data);
+            
+            //Get the table objects from above
+            const cropsBody = document.querySelector('#cropsTable tbody');
+            const robotsBody = document.querySelector('#robotsTable tbody');
+            const currentTasksBody = document.querySelector('#currentTasksTable tbody');
+            const completedTasksBody = document.querySelector('#completedTasksTable tbody');
+
+            cropsBody.innerHTML = '';
+            robotsBody.innerHTML = '';
+            currentTasksBody.innerHTML = '';
+            completedTasksBody.innerHTML = '';
+
+            //Get each item from the table and use it to fill a row of the table
+            //in the HTML
+            data.crops.forEach(crop => {
+                const row = `<tr>
+                    <td>${crop.id}</td>
+                    <td>${crop.name}</td>
+                    <td>${crop.moistureLevel}</td>
+                    <td>${crop.growthLevel}</td>
+                    <td>${crop.healthLevel}</td>
+                </tr>`;
+                cropsBody.innerHTML += row;
+            });
+
+            //Used to replace the integers in the table with strings
+            const TaskStatusEnum = {
+                0: "Pending",
+                1: "InProgress",
+                2: "Completed"
+            }
+
+            const TaskTypeEnum = {
+                0: "CropIrrigation", 
+                1: "RobotCharging",
+                2: "CropHarvesting"
+            }
+
+            data.tasks.forEach(task => {
+                //If it is not a completed tasks
+                if(task.status != 2){
+                    const row = `<tr>
+                        <td>${task.id}</td>
+                        <td>${TaskTypeEnum[task.type]}</td>
+                        <td>${task.robotId}</td>
+                        <td>${task.cropId}</td>
+                        <td>${TaskStatusEnum[task.status]}</td>
+                        <td>${task.progress}</td>
+                        <td>${task.duration}</td>
+                        <td>${task.priority}</td>
+                        </tr>`;
+                    currentTasksBody.innerHTML += row;
+                } else {
+                    //If it is a completed task
+                    const row = `<tr>
+                        <td>${task.id}</td>
+                        <td>${TaskTypeEnum[task.type]}</td>
+                        <td>${task.robotId}</td>
+                        <td>${task.cropId}</td>
+                        <td>${TaskStatusEnum[task.status]}</td>
+                        <td>${task.progress}</td>
+                        <td>${task.duration}</td>
+                        <td>${task.priority}</td>
+                        </tr>`;
+                    completedTasksBody.innerHTML += row;
+                }
+            });
+
+            // Define a mapping from enum integer to string
+            //using a javascrip object
+            const RobotStateEnum = {
+                0: "Available",
+                1: "Irrigating",
+                2: "Harvesting",
+                3: "Charging"
+            };
+
+            //Map the robots display
+            //Javascript uses camelcase, even though the attributes
+            //in C# are pascal case
+            data.robots.forEach(robot => {
+                //Make var as const cannot be reassigned
+                var task = null;
+
+                if(robot.currentTaskId){
+                    //If the robot has a task, we get that task information
+                    task = data.tasks.find(t => t.id === robot.currentTaskId);
+                    
+                } 
+
+                if (task){
+                        const row = `<tr>
+                            <td>${robot.id}</td>
+                            <td>${robot.name}</td>
+                            <td>${robot.batteryLevel}</td>
+                            <td>${RobotStateEnum[robot.state]}</td>
+                            <td>${robot.currentTaskId}</td>
+                            <td>${task.cropId}</td>
+                            <td>${Math.round(task.progress/task.duration*100)}%</td>
+                        </tr>`;
+
+                        robotsBody.innerHTML += row;
+                }
+                else 
+                {
+                    const row = `<tr>
+                        <td>${robot.id}</td>
+                        <td>${robot.name}</td>
+                        <td>${robot.batteryLevel}</td>
+                        <td>${RobotStateEnum[robot.state]}</td>
+                        <td>${robot.currentTaskId ?? '-'}</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>`;
+
+                    robotsBody.innerHTML += row;
+                }
+            });
+
+        } catch (error) {
+            console.error("ERROR:", error);
+        }
+    }
+    //Runs every second
+    //This reloads the data in the page every second
+    setInterval(loadData, 1000);
+    loadData();
+</script>

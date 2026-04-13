@@ -1,0 +1,36 @@
+# Build outputs
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Environment variables / secrets
+.env
+appsettings.Development.json
+
+# Docker
+docker-compose.override.yml
+
+# Test results
+TestResults/
+
+# Rider
+.idea/
+
+# Mac
+*.DS_Store
