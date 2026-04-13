@@ -1,4 +1,10 @@
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DESCRIPTION:
+- this class acts as an interface for the TaskRepository which interacts with the database. 
 
+*/
 using Greenhouse.Domain.Models;
 using Greenhouse.Domain.Enums;
 
