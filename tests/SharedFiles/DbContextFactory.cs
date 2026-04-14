@@ -1,5 +1,9 @@
 /*
-Used to create a mock database for testing code in TaskRepositoryTests.cs
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+    - Used to create a mock database for testing code in TaskRepositoryTests.cs
 */
 using Greenhouse.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
