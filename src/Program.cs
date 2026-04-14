@@ -1,3 +1,11 @@
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+- Main driver file of the program for Greenhouse Application. 
+
+*/
 using Greenhouse.PresentationAPI.EndPoints;
 using Greenhouse.Application.Services;
 using Greenhouse.Infrastructure.Data;
@@ -7,15 +15,16 @@ using Greenhouse.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
+// Use the default connection string found in appsetttings.json
 builder.Services.AddDbContext<GreenhouseDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+//REgister all services
 builder.Services.AddScoped<GreenhouseService>();
 builder.Services.AddScoped<CropService>();
 builder.Services.AddScoped<RobotService>();
 builder.Services.AddScoped<TaskService>();
 
+//Register all infrastructure items
 builder.Services.AddScoped<RuleSystem>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
@@ -33,8 +42,9 @@ builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogL
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+//Once everything is registered, build the application
 var app = builder.Build();
-
+//Allows for the use of endpoints, call the functions within the end point files
 app.MapGreenhouseEndpoints();
 app.MapCropEndpoints();
 app.MapRobotEndpoints();
@@ -43,9 +53,8 @@ app.MapRobotEndpoints();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// app.UseRouting();
-
-//For controllers:
+//For controllers: to allow them to be mapped automatically by the program
 app.MapControllers();
 
+//Run the application
 app.Run();
