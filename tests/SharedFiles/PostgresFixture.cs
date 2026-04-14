@@ -1,6 +1,11 @@
 /*
-    This class sets up everything that tests need to run before hand and disposes it afterwards. 
-    --> start container, create context, this is shared across all tests. 
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+    - This class sets up everything that tests need to run before hand and disposes it afterwards. 
+    --> starts container, creates context, this is shared across all tests. 
+    --> handles disposing of this afterwards, testDB is not persistent
 */
 using Greenhouse.Infrastructure.Data;
 using Greenhouse.Domain.Systems;

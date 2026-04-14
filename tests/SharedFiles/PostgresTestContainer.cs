@@ -1,6 +1,9 @@
 /*
-
-This file connects and talks to Docker and creates a running PostGreSQL database
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+    - This file connects and talks to Docker and creates a running PostGreSQL database
 */
 
 using System.Threading.Tasks;
@@ -11,7 +14,8 @@ namespace Greenhouse.Tests.SharedFiles;
 public class PostgresTestContainer
 {
     private readonly PostgreSqlContainer _container;
-
+    //Command dynamically creates a connection string for the temporary DB
+    //Includes: host, port, username etc...
     public string ConnectionString => _container.GetConnectionString();
 
     public PostgresTestContainer()
@@ -24,11 +28,13 @@ public class PostgresTestContainer
             .Build();
     }
 
+    //Start the container (called by PostgresFixture)
     public async Task StartAsync()
     {
         await _container.StartAsync();
     }
 
+    //Stop the container (called by PostgresFixture)
     public async Task StopAsync()
     {
         await _container.StopAsync();

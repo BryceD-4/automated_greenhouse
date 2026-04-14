@@ -1,7 +1,11 @@
 /*
-This is used to reset the database between test trials
-Used with contianerized DB integration testing. 
-Ensures tests are tested in isolation. 
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+- This is used to reset the database between test trials
+- Used with contianerized DB integration testing. 
+- Ensures tests are tested in isolation. 
 */
 using Greenhouse.Infrastructure.Data;
 
@@ -10,6 +14,7 @@ public static class DbCleaner
 {
     public static async Task Clear(GreenhouseDbContext context)
     {
+        //Clear all DB tables
         context.RobotTasks.RemoveRange(context.RobotTasks);
         context.Robots.RemoveRange(context.Robots);
         context.Crops.RemoveRange(context.Crops);
