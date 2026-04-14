@@ -1,3 +1,11 @@
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DESCRIPTION:
+- DTO created to limit user control during crop creation
+- Used by CropEndPoints.cs
+
+*/
 namespace Greenhouse.Domain.DTOs;
 
 //DTO = limits what client can control

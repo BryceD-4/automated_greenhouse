@@ -1,6 +1,10 @@
 /*
-
-This class tests TaskRepository using an in-memory database.
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+    - This class tests TaskRepository.cs using an in-memory database.
+    - Ensures the code works as expected and removes database interaction concern. 
 
 */
 using Xunit;
@@ -22,7 +26,7 @@ public class TaskRepositoryTests
     {
         var context = DbContextFactory.CreateInMemoryDbContext();
         int cropId = 1;
-
+        // Prefill the mocked DB
         context.RobotTasks.AddRange(
             new RobotTask { Id = 1, Type = TaskType.CropIrrigation, CropId = cropId, Status = TaskState.Pending, Priority = 1 },
             new RobotTask { Id = 2, Type = TaskType.CropIrrigation, CropId = cropId, Status = TaskState.Pending, Priority = 5 },
@@ -50,13 +54,15 @@ public class TaskRepositoryTests
         var task_1 = new RobotTask { Id = 1, Type = TaskType.CropIrrigation, CropId = cropId, Status = TaskState.Pending, Priority = 1 };
         var task_2 = new RobotTask { Id = 2, Type = TaskType.CropIrrigation, CropId = cropId, Status = TaskState.Pending, Priority = 5 };
         var task_3 = new RobotTask { Id = 3, Type = TaskType.CropIrrigation, CropId = cropId, Status = TaskState.Completed, Priority = 10 };
-
+    
+        //PRefill DB
         context.RobotTasks.AddRange(
             task_1, task_2, task_3
         );
-
+        //Save the changes to the DB
         await context.SaveChangesAsync();
         var repo = new TaskRepository(context);
+        //Need await here for an async task
         var result = await repo.CheckForCropTask(cropId, TaskType.CropHarvesting);
 
         //Result should be null, as no tasks have this type
@@ -77,12 +83,6 @@ public class TaskRepositoryTests
         context.RobotTasks.AddRange(
             task_1, task_2, task_3
         );
-
-        // context.RobotTasks.AddRange(
-        //     new RobotTask { Id = 1, Type = TaskType.RobotCharging, RobotId = robotId, Status = TaskState.Pending, Priority = 1 },
-        //     new RobotTask { Id = 2, Type = TaskType.CropIrrigation, RobotId = robotId, Status = TaskState.Pending, Priority = 5 },
-        //     new RobotTask { Id = 3, Type = TaskType.CropIrrigation, RobotId = robotId, Status = TaskState.Completed, Priority = 10 }
-        // );
 
         await context.SaveChangesAsync();
         var repo = new TaskRepository(context);
@@ -135,7 +135,8 @@ public class TaskRepositoryTests
         var result = await repo.GetNextRobotTask();
 
         Assert.NotNull(result);
-        Assert.Equal(2, result.Id); // highest priority pending
+        //Should get the highest priority pending task
+        Assert.Equal(2, result.Id); 
     }
 
     [Fact]
@@ -163,6 +164,7 @@ public class TaskRepositoryTests
         //Make sure the correct task was returned
         result.Id.Should().Be(task_1.Id);
 
+        //If not using fluent assertions
         // Assert.NotNull(result);
         // Assert.Equal(10, result.Id);
     }
@@ -197,7 +199,8 @@ public class TaskRepositoryTests
         //Need to reload the entity to see the changes made from call above
         await context.Entry(updated).ReloadAsync(); 
 
-        //Make sure the task was update appropriately
+        //Make sure the task was update appropriately in the robot object
+        
         // Assert.Equal(TaskState.InProgress, updated.Status);
         // Assert.Equal(5, updated.RobotId);
         updated.RobotId.Should().Be(robotId);

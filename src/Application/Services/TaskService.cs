@@ -1,4 +1,13 @@
-//This coordinates actions between the Robot and the Crop
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DESCRIPTION:
+- This class handles task management:
+    - task creation (water, harvest, charging)
+    - Task assignment and processing (for robot)
+- Called by RuleSystem.cs and SimulationService.cs 
+
+*/
 
 using Microsoft.EntityFrameworkCore;
 using Greenhouse.Infrastructure.Data;
@@ -11,13 +20,12 @@ namespace Greenhouse.Application.Services;
 
 public class TaskService
 {
-    // private readonly GreenhouseDbContext _dbContext;
+    // The task repository handles DB access for this class. 
+    //Optimizes testing with this structure. 
     private readonly ITaskRepository _taskRepo;
 
-    // public TaskService(GreenhouseDbContext context)
     public TaskService(ITaskRepository repo)
     {
-        // _dbContext = context;
         _taskRepo = repo;
     }
 
@@ -54,16 +62,17 @@ public class TaskService
 
     public async Task CreateHarvestTask(int cropId)
     {
-        var existing = await _taskRepo.CheckForCropTask(cropId, TaskType.CropHarvesting);
+        
+        var existingTask = await _taskRepo.CheckForCropTask(cropId, TaskType.CropHarvesting);
 
         //Prevent duplicates
-        if(existing != null)
+        if(existingTask != null)
         {
             return;
         }
 
         var taskPriority = 40;
-
+        
         var task = new RobotTask
         {
           CropId = cropId,
@@ -81,9 +90,9 @@ public class TaskService
 
     public async Task CreateChargeBatteryTask(int robotId)
     {
-        var existing = await _taskRepo.CheckForRobotTask(robotId, TaskType.RobotCharging);
-        
-        if(existing != null)
+        var existingTask = await _taskRepo.CheckForRobotTask(robotId, TaskType.RobotCharging);
+        //PRevent duplicate task creation
+        if(existingTask != null)
         {
             return;
         }
@@ -106,6 +115,7 @@ public class TaskService
 
     public async Task AssignTask(Robot robot)
     {
+        //If robot is already assigned a task, return
         if (robot.CurrentTaskId != null)
         {
             return;
@@ -114,6 +124,7 @@ public class TaskService
         //Then firstOrDefaultAsync gets the top (first) task from this list
         var task = await _taskRepo.GetNextRobotTask();
 
+        //If there are no tasks, return
         if (task == null) 
         {
             return;
@@ -128,33 +139,15 @@ public class TaskService
             //0== task is already being completed by another robot
             return;
         }
-
+        //Assign the robot to this task
         robot.CurrentTaskId = task.Id;
 
         await _taskRepo.SaveChangesAsync();
-
-    //OLD METHOD --> this works but is not parallel friendly, all robots pick the same task
-        // //If the robot is busy, return
-        // if (robot.CurrentTaskId != null)
-        // {
-        //   return;  
-        // } 
-
-        // var task = _dbContext.RobotTasks
-        //     .FirstOrDefault(t => t.Status == TaskState.Pending);
-
-        // if (task == null) return;
-
-        // task.Status = TaskState.InProgress;
-        // task.RobotId = robot.Id;
-
-        // robot.CurrentTaskId = task.Id;
-
-        // await _dbContext.SaveChangesAsync();
     }
 
     public async Task ProcessTask(Robot robot, double deltaTime)
     {
+        //If robot does not have a task asigned, return
         if (robot.CurrentTaskId == null)
         {
             return;
@@ -163,7 +156,7 @@ public class TaskService
         //Get the task the robot is working on
         var task = await _taskRepo.GetCurrentRobotTask(robot);
 
-        //If the robot has completed this task
+        //If the robot has completed this task, indicate it is available
         if(task == null)
         {
             robot.CurrentTaskId = null;

@@ -1,4 +1,13 @@
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+- This is the rule system which determines if tasks need to be created
+based off of Robot or crop variables. 
+- called by SimulationService.cs
 
+*/
 using Greenhouse.Domain.Models;
 using Greenhouse.Application.Services;
 

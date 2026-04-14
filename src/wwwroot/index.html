@@ -1,3 +1,13 @@
+<!-- 
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+- this creates a local dashboard in HTML that prints out the database information
+in clean tables.
+- visible at: http://localhost:5242/ 
+
+-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,7 +38,7 @@
 <body>
 
     <h1>Greenhouse Dashboard</h1>
-
+    <!-- CROPS TABLE -->
     <h2>Crops</h2>
     <table id="cropsTable">
         <thead>
@@ -43,6 +53,7 @@
         <tbody></tbody>
     </table>
 
+    <!-- ROBOTS TABLE -->
     <h2>Robots</h2>
     <table id="robotsTable">
         <thead>
@@ -58,7 +69,7 @@
         </thead>
         <tbody></tbody>
     </table>
-
+    <!-- TASK NOT COMPLETED TABLE -->
     <h2>Current Tasks</h2>
     <table id="currentTasksTable">
         <thead>
@@ -75,7 +86,7 @@
         </thead>
         <tbody></tbody>
     </table>
-
+    <!-- COMPLETED TASKS TABLE -->
     <h2>Completed Tasks</h2>
     <table id="completedTasksTable">
         <thead>
@@ -100,8 +111,6 @@
             const response = await fetch('/api/status');
             //Convert the raw text received into a JavaScript object
             const data = await response.json();
-
-            // console.log("DATA:", data);
             
             //Get the table objects from above
             const cropsBody = document.querySelector('#cropsTable tbody');
@@ -133,7 +142,8 @@
                 1: "InProgress",
                 2: "Completed"
             }
-
+            
+            //Used to replace the integers in the table with strings
             const TaskTypeEnum = {
                 0: "CropIrrigation", 
                 1: "RobotCharging",

@@ -1,3 +1,13 @@
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+    - This class tests the TaskService.cs class functionality
+    - Tests using a containerized test database to test actual postGreSQL interactions
+    via task repository
+    - TaskService > TaskRepository > PostgreSQL
+*/
 using Xunit;
 using FluentAssertions;
 using Greenhouse.Tests.SharedFiles;

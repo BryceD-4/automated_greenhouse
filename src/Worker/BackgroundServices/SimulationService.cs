@@ -1,4 +1,14 @@
-//This updates crops, changes moisture level, marks ready for harvest
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+- This class runs the system loop which iterates over the robots and crops, 
+applies the environmental changes and then triggers the parallel evaluation
+of each crop and robot to handle task cration, assignment, and execution. 
+
+*/
+
 using Greenhouse.Infrastructure.Data;
 using Greenhouse.Domain.DTOs;
 using Greenhouse.Domain.Models;
@@ -70,67 +80,6 @@ public class SimulationService : BackgroundService
 
             //Only run every second
            await Task.Delay(1000, stoppingToken);
-
-
-    // ____________TRIAL 1: Sequential task handling________
-
-//THIS Version ran all calls sequentially due to the foreach loops and "await" calls
-            // using var scope = _scopeFactory.CreateScope();
-            // //Create a new scope every loop (as context is scoped, but each loop is one scope)
-            // var context = scope.ServiceProvider.GetRequiredService<GreenhouseDbContext>();
-            // //Get fresh service every loop
-            // var taskService = scope.ServiceProvider.GetRequiredService<TaskService>();
-            // var ruleSystem = scope.ServiceProvider.GetRequiredService<RuleSystem>();
-
-            // //1 second per loop
-            // double deltaTime = 1;
-
-            // //Get all of the data from the tables
-            // var robots = await context.Robots.ToListAsync();
-            // var crops = await context.Crops.ToListAsync();
-            // //Update crops
-            // foreach (var crop in crops)
-            // {
-            //     //1. Crop losing water over time
-            //     crop.MoistureLevel -= 1 * deltaTime;
-            //     crop.GrowthLevel += 10 * deltaTime;   
-            // }
-
-            // foreach (var robot in robots)
-            // {
-            //     robot.BatteryLevel -= 5 * deltaTime;
-            // }
-            
-            // //2. Evaluate crop status
-            // foreach (var crop in crops)
-            // {
-            //     await ruleSystem.EvaluateCrop(crop, taskService);
-            // }
-            // foreach (var robot in robots)
-            // {
-            //     await ruleSystem.EvaluateRobot(robot, taskService);
-            // }
-
-            // //3. Assign task to robot if it is idle
-            // foreach(var robot in robots)
-            // {
-            //     await taskService.AssignTask(robot);
-            // }
-
-            // //4. Process task 
-            // foreach(var robot in robots) {
-            //     await taskService.ProcessTask(robot, deltaTime);
-            // }
-
-            // //Save changes to database
-            // await context.SaveChangesAsync();
-
-            // //Loop runs every second
-            // await Task.Delay(1000, stoppingToken);
-
-            // //To visibly see the changes as they occur
-            // // Console.WriteLine($"Water Level: {crop.MoistureLevel}, Task: {robot.CurrentTaskId}");
-            // // _logger.LogInformation($"Moisture: {crop.MoistureLevel}, Growth: {crop.GrowthLevel} , Robot: {robot.State}");
         }
     }
     //Parallel Helper method
