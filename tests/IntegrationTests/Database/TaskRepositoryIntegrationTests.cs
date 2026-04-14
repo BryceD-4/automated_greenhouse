@@ -1,7 +1,12 @@
 /*
-    This class runs integration tests to test reall interaction with the actual database. 
-    Uses a containerized version of the DB. 
-    so this tests the repository interaction with the real DB. 
+   PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+    - Tests TaskRepository.cs
+    - This class runs integration tests to test reall interaction with the actual database. 
+    - Uses a containerized version of the DB. 
+    - i.e. This tests the repository interaction with the real (test) DB. 
 */
 using Xunit;
 using Greenhouse.Tests.SharedFiles;

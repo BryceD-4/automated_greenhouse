@@ -1,9 +1,13 @@
 /*
-    This class holds end to end testing for the entire greenhouse application
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+    - This class holds end to end testing for the entire greenhouse application
     Performs 3 tests:
     1. Dry crop, creates task, robot gets this task, DB updates
-    2. Crop ready, harvest task created, robot gets task, DB updates
-    3. Robot battery, charge task, robot begins charging, DB updates
+    2. NOT COMPLETE: Crop ready, harvest task created, robot gets task, DB updates
+    3. NOT COMPLETE: Robot battery, charge task, robot begins charging, DB updates
 */
 
 using Xunit;
