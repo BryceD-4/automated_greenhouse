@@ -1,5 +1,11 @@
-//This handles robot actions: assigns robot tasks, recharge logic, battery usage updates
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DESCRIPTION:
+- This class handles robot creation, obtaining, and deletion from the database
+- only used by RobotEndPoints when calls are made via http for robot queries. 
 
+*/
 
 using Greenhouse.Infrastructure.Data;
 using Greenhouse.Domain.DTOs;
