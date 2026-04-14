@@ -1,4 +1,12 @@
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+- this file creates the context, which is used for each thread in the application. 
+- The information here also determines the structure of the database
 
+*/
 using Greenhouse.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,7 +44,7 @@ public class GreenhouseDbContext : DbContext
             .HasConversion<string>(); 
     }
 
-    //these create the tables in the database
+    //these create the tables in the database, and align these with the models created
     public DbSet<Crop> Crops => Set<Crop>();
     public DbSet<Robot> Robots => Set<Robot>(); 
     public DbSet<RobotTask> RobotTasks => Set<RobotTask>(); 
