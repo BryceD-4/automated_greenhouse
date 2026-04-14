@@ -1,4 +1,11 @@
-//This coordinates actions between the Robot and the Crop
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DESCRIPTION:
+- This class was used for testing, when an http call is sent to mimick an action between a robot and crop
+this class is called from GreenhouseEndPoints.cs
+
+*/
 
 using Microsoft.EntityFrameworkCore;
 using Greenhouse.Infrastructure.Data;
@@ -15,7 +22,7 @@ public class GreenhouseService
     {
         _db = db;
     }
-
+    //Send a robot to water a crop
     public async Task<bool> WaterCrop(int robotId, int cropId)
     {
         var robot = await _db.Robots.FindAsync(robotId);
