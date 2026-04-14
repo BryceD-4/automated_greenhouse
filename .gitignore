@@ -35,3 +35,5 @@ TestResults/
 
 # Mac
 *.DS_Store
+/tests/bin
+/tests/obj
