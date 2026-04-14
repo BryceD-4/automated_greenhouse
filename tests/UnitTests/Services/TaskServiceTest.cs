@@ -1,5 +1,13 @@
-﻿
+﻿/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+    - This class tests the proper functioning of code within TaskService.cs
+    - Unit tests utilize mock setups for calls to taskRepo to isolate the unit tests. 
+*/
 using Xunit;
+//Used to create mocked version of function calls to TaskRepo
 using Moq;
 using FluentAssertions;
 using Greenhouse.Application.Services;
@@ -329,7 +337,7 @@ public class TaskServiceTest
         var mockRepo = new Mock<ITaskRepository>();
         var service = new TaskService(mockRepo.Object);
         await service.ProcessTask(robot, deltaTime);
-        //Ensure the method in the function did not run
+        //Ensure the other methods in the function did not run
         mockRepo.Verify(rep => rep.GetCurrentRobotTask(robot), Times.Never);
         mockRepo.Verify(rep => rep.GetTargetCrop(task), Times.Never);
         mockRepo.Verify(rep => rep.SaveChangesAsync(), Times.Never);
@@ -452,6 +460,7 @@ public class TaskServiceTest
         mockRepo.Verify(rep => rep.SaveChangesAsync(), Times.Once);
     }
 
+//Not complete, to do for practice
 //     [Fact]
 //     public async Task ProcessTask_TestIfTaskNotDone_Harvesting()
 //     {
@@ -510,6 +519,7 @@ public class TaskServiceTest
 
     }
 
+//To do for practice
 //     [Fact]
 //     public async Task ProcessTask_TestIfTaskDone_Irrigation()
 //     {
