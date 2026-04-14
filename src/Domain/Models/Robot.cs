@@ -1,4 +1,11 @@
+/*
+PROJECT: Automated Greenhouse
+AUTHOR: Bryce Dixon
+DATE: April 2026
+DESCRIPTION:
+- This creates the robot object that is stored in the database
 
+*/
 using Greenhouse.Domain.Enums;
 
 namespace Greenhouse.Domain.Models;
