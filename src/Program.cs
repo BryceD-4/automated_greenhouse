@@ -16,8 +16,20 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Use the default connection string found in appsetttings.json
+//This was only for a local connection
+// builder.Services.AddDbContext<GreenhouseDbContext>(options =>
+//     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Get the Program.cs to support both local and cloud
+var connectionString =
+    Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+    
+//Use the local or cloud connection described above
 builder.Services.AddDbContext<GreenhouseDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
+
+
 //REgister all services
 builder.Services.AddScoped<GreenhouseService>();
 builder.Services.AddScoped<CropService>();
