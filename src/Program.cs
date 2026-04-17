@@ -36,8 +36,10 @@ if (!string.IsNullOrEmpty(databaseUrl))
     //"user : password" --> ["user", "password"]
     //Now can get user name and password for conection string below
     var userInfo = uri.UserInfo.Split(':');
+    //Error in render with port being -1, so need to check if a port is provided
+    var port = uri.Port > 0 ? uri.Port : 5432;
 
-    connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    connectionString = $"Host={uri.Host};Port={port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
 
 } else
 {
