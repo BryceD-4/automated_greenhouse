@@ -43,43 +43,67 @@ public class SimulationService : BackgroundService
     //i.e. when the app stops (ctrl+c), ".IsCancellationRequested" becomes true
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        // Provide feedback
+        _logger.LogInformation("SimulationService is waiting for database connectivity...");
+        //applies any database changes when loads in Render
+        //Avoids render failing when cannot find a specific table
+        //Create a scope to applu this within, gets a scope to apply this connection within temporarily
+        using (var startupScope = _scopeFactory.CreateScope())
+        {
+            //Get database configurations
+            var context = startupScope.ServiceProvider.GetRequiredService<GreenhouseDbContext>();
+            // Updates all migrations when loading in Render, builds Render DB
+            //Compares migrations to the Render DB and ensures they are the same
+            await context.Database.MigrateAsync(stoppingToken);
+        }
+
+        _logger.LogInformation("Database is ready. Starting simulation loop.");
+       
         while (!stoppingToken.IsCancellationRequested)
         {
-            //create one scope per instance, allows us to get our context
-            using var scope = _scopeFactory.CreateScope();
-            //Context is the model of the database we use
-            //scope.ServiceProvider --> simply allows us to get services in our scope
-            var context = scope.ServiceProvider.GetRequiredService<GreenhouseDbContext>();
+            try{
+                //create one scope per instance, allows us to get our context
+                using var scope = _scopeFactory.CreateScope();
+                //Context is the model of the database we use
+                //scope.ServiceProvider --> simply allows us to get services in our scope
+                var context = scope.ServiceProvider.GetRequiredService<GreenhouseDbContext>();
 
-            //Get the robots and crops from the list within the database
-            var robots = await context.Robots.ToListAsync();
-            var crops = await context.Crops.ToListAsync();
+                //Get the robots and crops from the list within the database
+                var robots = await context.Robots.ToListAsync();
+                var crops = await context.Crops.ToListAsync();
 
-            //Each loop is one second
-            double deltaTime = 1;
+                //Each loop is one second
+                double deltaTime = 1;
 
-            //update the system components to imitate the conditions
-            foreach (var crop in crops)
-            {
-                crop.MoistureLevel -= 1 * deltaTime;
-                crop.GrowthLevel += 10 * deltaTime;
+                //update the system components to imitate the conditions
+                foreach (var crop in crops)
+                {
+                    crop.MoistureLevel -= 1 * deltaTime;
+                    crop.GrowthLevel += 10 * deltaTime;
+                }
+
+                foreach (var robot in robots)
+                {
+                    robot.BatteryLevel -= 5 * deltaTime;
+                }
+
+                //Save changes to the database
+                await context.SaveChangesAsync();
+
+                //Run parallel processing
+                //This is the helper function below
+                await RunParallel(crops, crop => ProcessCrop(crop, deltaTime));
+                await RunParallel(robots, robot => ProcessRobot(robot, deltaTime));
+
+                    //Only run every second
+                await Task.Delay(1000, stoppingToken);
             }
-
-            foreach (var robot in robots)
+            catch (Exception ex)
             {
-                robot.BatteryLevel -= 5 * deltaTime;
+                // Prevents one database error from killing the whole app
+                _logger.LogError(ex, "Error in Simulation Loop. Retrying in 5 seconds...");
+                await Task.Delay(5000, stoppingToken);           
             }
-
-            //Save changes to the database
-            await context.SaveChangesAsync();
-
-           //Run parallel processing
-           //This is the helper function below
-           await RunParallel(crops, crop => ProcessCrop(crop, deltaTime));
-           await RunParallel(robots, robot => ProcessRobot(robot, deltaTime));
-
-            //Only run every second
-           await Task.Delay(1000, stoppingToken);
         }
     }
     //Parallel Helper method
