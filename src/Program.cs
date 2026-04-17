@@ -21,10 +21,25 @@ var builder = WebApplication.CreateBuilder(args);
 //     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //Get the Program.cs to support both local and cloud
-var connectionString =
-    Environment.GetEnvironmentVariable("DATABASE_URL")
-    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+// var connectionString =
+//     Environment.GetEnvironmentVariable("DATABASE_URL")
+//     ?? builder.Configuration.GetConnectionString("DefaultConnection");
     
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+string connectionString;
+//If we are using cloud connection, else use a local connection
+if (!string.IsNullOrEmpty(databaseUrl))
+{
+    var url = new Uri(databaseUrl);
+    var userInfo = uri.UserInfo.Split(':');
+
+    connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+
+} else
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+}
+
 //Use the local or cloud connection described above
 builder.Services.AddDbContext<GreenhouseDbContext>(options =>
     options.UseNpgsql(connectionString));
