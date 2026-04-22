@@ -1,5 +1,5 @@
 # Build stage, use a .NET machine to build this
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 # adding TARGETARCH as building for EC2 AMD64 and ignore ARM64 Mac architecture
 ARG TARGETARCH
 WORKDIR /app
