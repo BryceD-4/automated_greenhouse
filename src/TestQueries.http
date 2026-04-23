@@ -1,16 +1,18 @@
 #This uses endpoints for crop and robots in src/PresentationAPI/EndPoints
-//For Render cloud connections
-//'@' defines a variable
-@baseaddress = https://automated-greenhouse.onrender.com
-//For local host connections
-# @baseAddress = http://localhost:5242
+#For Render cloud connections
+   #'@' defines a variable 
+   # @baseaddress = https://automated-greenhouse.onrender.com
+#For local host connections
+   # @baseAddress = http://localhost:5242
+#for AWS connections to EC2 IPv4
+@baseaddress = http://18.222.185.172:5000
 ###__ROBOT__##
 # inject varaible
 POST {{baseaddress}}/robots
 content-type: application/json
 
 {
-   "name": "R2"
+   "name": "R3"
 }
 
 ###Three markers are needed to separate requests
@@ -19,7 +21,7 @@ GET {{baseaddress}}/robots
 
 ###
 #/robots/id_to_delete
-DELETE {{baseaddress}}/robots/2
+DELETE {{baseaddress}}/robots/3
 
 ###__CROP__##
 
@@ -27,7 +29,7 @@ POST {{baseaddress}}/crops
 content-type: application/json
 
  {
-    "name": "Orange"
+    "name": "Cherry"
  }
 
 ###

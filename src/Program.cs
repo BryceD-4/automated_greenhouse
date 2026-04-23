@@ -50,7 +50,7 @@ if (!string.IsNullOrEmpty(databaseUrl))
 builder.Services.AddDbContext<GreenhouseDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// To align with Dockerfile, get app to listen on port 8080
+// Get app to listen on port 8080 (this is the internal port when launching in the cloud)
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(8080);
