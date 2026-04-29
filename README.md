@@ -6,7 +6,7 @@ Cloud-based simulation of an automated greenhouse where robots manage irrigation
 - PostgreSQL
 - Docker
 - AWS (EC2, RDS)
-- xUnit
+- xUnit and FluentAssertions
 
 ## Overview
 This project models a greenhouse environment where crops and robots evolve over time.  
@@ -21,7 +21,7 @@ As system conditions change, tasks are generated and processed concurrently, wit
 - Unit + integration testing with xUnit
 
 ## System Logic (Simplified)
-- Crops: moisture decreases, growth increases over time  
+- Crops: moisture decreases, growth increases over time, health reduces with delayed harvesting  
 - Robots: battery decreases over time  
 - Thresholds trigger task creation  
 - Robots continuously select highest-priority tasks  
