@@ -23,6 +23,7 @@ Thumbs.db
 # Environment variables / secrets
 .env
 appsettings.Development.json
+appsettings.json
 
 # Docker
 docker-compose.override.yml
